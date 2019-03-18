@@ -16,7 +16,7 @@ public class ObjectCreator {
 				+ "   OR - Single object with object references"
 				+ "   AP - An object containing an Array of primitives \n"
 				+ "   AO - An object containing an Array of objects "
-				+ "   C - collection class");
+				+ "   C - An object containing a collection class");
 		while (!fin) {
 			String line = s.nextLine();
 			if (line.equals("OP")) {
@@ -45,29 +45,81 @@ public class ObjectCreator {
 		}
 	}
 	
-	private void createOP() {
-		System.out.println("Give the class name:");
+	public void createOP() {
+		System.out.println("Give the class name for new object (id# " + nextID + "):");
 		String cls = s.nextLine();
 		UserObject obj = new UserObject(cls, nextID, "OP");
-		
+		int objID = nextID;
+		boolean fin = false;
+		while (!fin) {
+			System.out.println("Create primitive fields for " + cls + " (id# " + objID + ") in the form <name> <value> or '$$' to finish");
+			String line = s.nextLine();
+			String[] sLine = line.split(" ");
+			if (line.equals("$$")) {
+				fin = true;
+			}
+			else if (sLine.length != 2) {
+				System.out.println("Incorrect formatting; Form <name> <value> or '$$' to finish"); 
+			}
+			else if (!(isNum(sLine[1]) || isChar(sLine[1]))){
+				System.out.println("value was not a primitive");
+			}
+			else {
+				obj.fields.add(new UserField(obj.cls, sLine[0], sLine[1]));
+			}
+		}
+		prepareNextID();
 	}
-	private void createOR() {
+	private boolean isNum(String str) {
+		try {
+			Double d = Double.parseDouble(str);
+		} catch (NumberFormatException e) {
+			return false;
+		}
+		return true;
+	}
+	
+	private boolean isChar(String str) {
+		if (str.length() == 1) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	public void createOR() {
 		// TODO Auto-generated method stub
 		
 	}
 	
-	private void createAP() {
+	public void createAP() {
 		// TODO Auto-generated method stub
 		
 	}
 	
-	private void createAO() {
+	public void createAO() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	private void createCollection() {
+	public void createCollection() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void prepareNextID() {
+		nextID++;
+		boolean tryAgain = false;
+		while (!tryAgain) {
+			tryAgain = false;
+			for (UserObject obj : objList) {
+				if (obj.id == nextID) {
+					nextID++;
+					tryAgain = true;
+					break;
+				}
+			}
+		}
 	}
 }

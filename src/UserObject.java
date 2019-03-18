@@ -5,7 +5,7 @@ public class UserObject {
 	String cls;
 	int id;
 	String objType;
-	ArrayList<Object> fields = new ArrayList<Object>();
+	ArrayList<UserField> fields = new ArrayList<UserField>();
 
 	public UserObject(String cls, int id, String objType) {
 		this.cls = cls;
