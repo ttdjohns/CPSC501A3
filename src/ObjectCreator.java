@@ -156,8 +156,40 @@ public class ObjectCreator {
 	}
 
 	public int createAP() {
-		// TODO Auto-generated method stub
-		return 0;
+		boolean fin = false;
+		String cls = "";
+		while (!fin) {
+			System.out.println("Give the array components type for new object (id# " + nextID + "): (B,C,D,F,I,J,S,Z)");
+			cls = s.nextLine();
+			if (cls.equals("B") || cls.equals("C") || cls.equals("D") || cls.equals("F") 
+					|| cls.equals("I") || cls.equals("J") || cls.equals("S") || cls.equals("Z")) {
+				fin = true;
+			}
+			else {
+				System.out.println("Invalid primitive component type");
+			}
+		}
+		UserObject obj = new UserObject("[" + cls, nextID, "AP");
+		objList.add(obj);
+		prepareNextID();
+		
+		while (!fin) {
+			System.out.println("Create primitive value for [" + cls + " (id# " + obj.id + "). '$$' to finish");
+			String line = s.nextLine();
+			if (line.equals("$$")) {
+				fin = true;
+			}
+			else if (cls.equals("C") && !isChar(line)) {
+				System.out.println("Incorrect input; single characture or '$$' to finish"); 
+			}
+			else if (!cls.equals("C") && !isNum(line)) {
+				System.out.println("Incorrect input; number or '$$' to finish"); 
+			}
+			else {
+				obj.primArray.add(line);
+			}
+		}
+		return obj.id;
 	}
 	
 	public int createAO() {

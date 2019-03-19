@@ -5,7 +5,6 @@ public class UserField {
 	String value = "";
 	int reference = 0;
 	boolean isPrim = false;
-	boolean isArray = false;
 	boolean isObject = false;
 	
 	public UserField(String declaringclass, String name, String value) {
