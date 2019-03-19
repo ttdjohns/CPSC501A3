@@ -193,8 +193,32 @@ public class ObjectCreator {
 	}
 	
 	public int createAO() {
-		// TODO Auto-generated method stub
-		return 0;
+		String cls = "[Object";
+		UserObject obj = new UserObject(cls, nextID, "AO");
+		objList.add(obj);
+		prepareNextID();
+		boolean fin = false;
+		while (!fin) {
+			System.out.println("Create object reference fields for " + cls + " (id# " + obj.id + ")\n"
+					+ "  Enter <refID#> for an existing object\n"
+					+ "  Enter N   for a new object\n"
+					+ "   or '$$' to finish");
+			String line = s.nextLine();
+			if (line.equals("$$")) {
+				fin = true;
+			}
+			else if (line.equals("N")) {
+				int returnedID = objCreator();
+				obj.objArray.add(returnedID);
+			}
+			else if (!isNum(line) || !checkObjCreated(line)){
+				System.out.println("refID# " + line + " does not exist");
+			}
+			else {
+				obj.objArray.add(Integer.parseInt(line));
+			}
+		}
+		return obj.id;
 	}
 
 	public int createCollection() {
