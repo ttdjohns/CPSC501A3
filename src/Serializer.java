@@ -6,10 +6,6 @@ import org.jdom2.*;
 public class Serializer {
 	ArrayList<Integer> done = new ArrayList<Integer>();
 	Element root = new Element("serialized");
-
-	public void serializer() {
-		
-	}
 	
 	public org.jdom2.Document serialize(Object norm_obj) {
 		if (!(norm_obj instanceof List<?>)) {
