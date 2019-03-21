@@ -49,7 +49,7 @@ public class ObjectCreator {
 	public UserObject createOP() {
 		System.out.println("Give the class name for new object (id# " + nextID + "):");
 		String cls = s.nextLine();
-		UserObject obj = new UserObject(cls, nextID, "OP");
+		UserObject obj = new UserObject(cls, nextID);
 		objList.add(obj);
 		prepareNextID();
 		boolean fin = false;
@@ -80,7 +80,7 @@ public class ObjectCreator {
 	public UserObject createOR() {
 		System.out.println("Give the class name for new object (id# " + nextID + "):");
 		String cls = s.nextLine();
-		UserObject obj = new UserObject(cls, nextID, "OR");
+		UserObject obj = new UserObject(cls, nextID);
 		objList.add(obj);
 		prepareNextID();
 		boolean fin = false;
@@ -128,7 +128,7 @@ public class ObjectCreator {
 				System.out.println("Invalid primitive component type");
 			}
 		}
-		UserObject obj = new UserObject("[" + cls, nextID, "AP");
+		UserObject obj = new UserObject("[" + cls, nextID);
 		objList.add(obj);
 		prepareNextID();
 		
@@ -167,7 +167,7 @@ public class ObjectCreator {
 	
 	public UserObject createAO() {
 		String cls = "[Object";
-		UserObject obj = new UserObject(cls, nextID, "AO");
+		UserObject obj = new UserObject(cls, nextID);
 		objList.add(obj);
 		prepareNextID();
 		boolean fin = false;
@@ -194,13 +194,13 @@ public class ObjectCreator {
 			}
 			else if (line.equals("N")) {
 				UserObject returnedObj = objCreator();
-				obj.objArray.add(returnedObj);
+				obj.objArray.add(returnedObj.id);
 			}
 			else if (!isInt(line) || !checkObjCreated(line)){
 				System.out.println("refID# " + line + " does not exist");
 			}
 			else {
-				obj.objArray.add(getObjFromID(Integer.parseInt(line)));
+				obj.objArray.add(Integer.parseInt(line));
 			}
 		}
 		return obj;
@@ -208,7 +208,7 @@ public class ObjectCreator {
 
 	public UserObject createCollection() {
 		String cls = ArrayList.class.getName();
-		UserObject obj = new UserObject(cls, nextID, "collection");
+		UserObject obj = new UserObject(cls, nextID);
 		objList.add(obj);
 		prepareNextID();
 		boolean fin = false;
@@ -223,13 +223,13 @@ public class ObjectCreator {
 			}
 			else if (line.equals("N")) {
 				UserObject returnedObj = objCreator();
-				obj.objArray.add(returnedObj);
+				obj.objArray.add(returnedObj.id);
 			}
 			else if (!isInt(line) || !checkObjCreated(line)){
 				System.out.println("refID# " + line + " does not exist");
 			}
 			else {
-				obj.objArray.add(getObjFromID(Integer.parseInt(line)));
+				obj.objArray.add(Integer.parseInt(line));
 			}
 		}
 		return obj;

@@ -27,7 +27,7 @@ public class Serializer {
 		ele.setAttribute("id", String.valueOf(obj.id));
 		done.add(obj.id);
 		
-		if (obj.objType.equals("OP")) {
+		if (obj.fields.size() > 0 && obj.fields.get(0).isPrim) {
 			for (UserField i : obj.fields) {
 				Element e = new Element("field");
 				e.setAttribute("name", i.name);
@@ -36,7 +36,7 @@ public class Serializer {
 				ele.addContent(e);
 			}
 		}
-		else if (obj.objType.equals("OR")) {
+		else if (obj.fields.size() > 0 && obj.fields.get(0).isObject) {
 			for (UserField i : obj.fields) {
 				Element e = new Element("field");
 				e.setAttribute("name", i.name);
@@ -45,7 +45,7 @@ public class Serializer {
 				ele.addContent(e);
 			}
 		} 
-		else if (obj.objType.equals("AP")) {
+		else if (obj.primArray.size() > 0 && obj.arraySize > 0) {
 			ele.setAttribute("length", String.valueOf(obj.arraySize));
 			for (int i = 0; i < obj.arraySize; i++) {
 				if (i < obj.primArray.size()) {
@@ -56,11 +56,11 @@ public class Serializer {
 				}
 			}
 		}
-		else if (obj.objType.equals("AO")) {
+		else if (obj.objArray.size() > 0 && obj.arraySize > 0) {
 			ele.setAttribute("length", String.valueOf(obj.arraySize));
 			for (int i = 0; i < obj.arraySize; i++) {
 				if (i < obj.objArray.size()) {
-					ele.addContent((new Element("reference")).setText(String.valueOf(obj.objArray.get(i).id)));
+					ele.addContent((new Element("reference")).setText(String.valueOf(obj.objArray.get(i))));
 				} 
 				else {
 					ele.addContent((new Element("reference")).setText("NULL"));
@@ -68,8 +68,8 @@ public class Serializer {
 			}
 		}
 		else {
-			for (int i = 0; i < obj.arraySize; i++) {
-				ele.addContent((new Element("reference")).setText(String.valueOf(obj.objArray.get(i).id)));
+			for (int i = 0; i < obj.objArray.size(); i++) {
+				ele.addContent((new Element("reference")).setText(String.valueOf(obj.objArray.get(i))));
 			}
 		}
 		
