@@ -39,8 +39,11 @@ public class Deserializer {
 					UserField f = new UserField(c.getAttributeValue("name"), c.getAttributeValue("declaringclass"), text);
 					obj.fields.add(f);
 				} else {
-					UserField f = new UserField(c.getAttributeValue("name"), c.getAttributeValue("declaringclass"), Integer.parseInt(c.getChildText("reference")));
-					obj.fields.add(f);
+					text = c.getChildText("reference");
+					if (!(text.contains("NULL"))) {
+						UserField f = new UserField(c.getAttributeValue("name"), c.getAttributeValue("declaringclass"), Integer.parseInt(text));
+						obj.fields.add(f);
+					}
 				}
 				
 			}
