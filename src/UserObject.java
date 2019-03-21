@@ -1,4 +1,3 @@
-import java.util.List;
 import java.util.ArrayList;
 
 public class UserObject {
@@ -6,8 +5,9 @@ public class UserObject {
 	int id;
 	String objType;
 	ArrayList<UserField> fields = new ArrayList<UserField>();
-	ArrayList<Integer> objArray = new ArrayList<Integer>();
+	ArrayList<UserObject> objArray = new ArrayList<UserObject>();
 	ArrayList<String> primArray = new ArrayList<String>();
+	int arraySize = 0;
 
 	public UserObject(String cls, int id, String objType) {
 		this.cls = cls;

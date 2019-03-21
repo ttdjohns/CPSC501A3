@@ -1,4 +1,3 @@
-import java.util.Collections.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -9,9 +8,9 @@ public class ObjectCreator {
 	int nextID = 0;
 	Scanner s = new Scanner(System.in);
 	
-	public int objCreator() {
+	public UserObject objCreator() {
 		boolean fin = false;
-		int ret = 0;
+		UserObject ret = null;
 		System.out.println("Select an option: \n"
 				+ "   OP - Single object with primitives \n"
 				+ "   OR - Single object with object references\n"
@@ -47,7 +46,7 @@ public class ObjectCreator {
 		return ret;
 	}
 	
-	public int createOP() {
+	public UserObject createOP() {
 		System.out.println("Give the class name for new object (id# " + nextID + "):");
 		String cls = s.nextLine();
 		UserObject obj = new UserObject(cls, nextID, "OP");
@@ -74,36 +73,11 @@ public class ObjectCreator {
 				obj.fields.add(new UserField(obj.cls, sLine[0], sLine[1]));
 			}
 		}
-		return obj.id;
-	}
-	private boolean nameExists(UserObject obj, String fName) {
-		for (UserField fields : obj.fields) {
-			if (fields.name.equals(fName)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean isNum(String str) {
-		try {
-			Double d = Double.parseDouble(str);
-		} catch (NumberFormatException e) {
-			return false;
-		}
-		return true;
+		return obj;
 	}
 	
-	private boolean isChar(String str) {
-		if (str.length() == 1) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
 
-	public int createOR() {
+	public UserObject createOR() {
 		System.out.println("Give the class name for new object (id# " + nextID + "):");
 		String cls = s.nextLine();
 		UserObject obj = new UserObject(cls, nextID, "OR");
@@ -127,8 +101,8 @@ public class ObjectCreator {
 				System.out.println("Field name already exists");
 			}
 			else if (sLine[1].equals("N")) {
-				int returnedID = objCreator();
-				obj.fields.add(new UserField(obj.cls, sLine[0], returnedID));
+				UserObject returnedObj = objCreator();
+				obj.fields.add(new UserField(obj.cls, sLine[0], returnedObj.id));
 			}
 			else if (!checkObjCreated(sLine[1])){
 				System.out.println("refID# " + sLine[1] + " does not exist");
@@ -137,25 +111,10 @@ public class ObjectCreator {
 				obj.fields.add(new UserField(obj.cls, sLine[0], Integer.parseInt(sLine[1])));
 			}
 		}
-		return obj.id;
-	}
-	
-	private boolean checkObjCreated(String string) {
-		int id = 999999999;
-		try {
-			id = Integer.parseInt(string);
-		} catch (NumberFormatException e) {
-			return false;
-		}
-		for (UserObject obj : objList) {
-			if (obj.id == id) {
-				return true;
-			}
-		}
-		return false;
+		return obj;
 	}
 
-	public int createAP() {
+	public UserObject createAP() {
 		boolean fin = false;
 		String cls = "";
 		while (!fin) {
@@ -173,7 +132,21 @@ public class ObjectCreator {
 		objList.add(obj);
 		prepareNextID();
 		
+		fin = false;
 		while (!fin) {
+			System.out.println("Set the array size for " + cls + " (id# " + obj.id + ")");
+			String line = s.nextLine();
+			if (!isInt(line)) {
+				System.out.println("That was not an integer");
+			}
+			else {
+				obj.arraySize = Integer.parseInt(line);
+				fin = true;
+			}
+		}
+		fin = false;
+		
+		while (!fin && obj.arraySize > obj.primArray.size()) {
 			System.out.println("Create primitive value for [" + cls + " (id# " + obj.id + "). '$$' to finish");
 			String line = s.nextLine();
 			if (line.equals("$$")) {
@@ -189,12 +162,53 @@ public class ObjectCreator {
 				obj.primArray.add(line);
 			}
 		}
-		return obj.id;
+		return obj;
 	}
 	
-	public int createAO() {
+	public UserObject createAO() {
 		String cls = "[Object";
 		UserObject obj = new UserObject(cls, nextID, "AO");
+		objList.add(obj);
+		prepareNextID();
+		boolean fin = false;
+		while (!fin) {
+			System.out.println("Set the array size for " + cls + " (id# " + obj.id + ")");
+			String line = s.nextLine();
+			if (!isInt(line)) {
+				System.out.println("That was not an integer");
+			}
+			else {
+				obj.arraySize = Integer.parseInt(line);
+				fin = true;
+			}
+		}
+		fin = false;
+		while (!fin && obj.arraySize > obj.objArray.size()) {
+			System.out.println("Create object reference fields for " + cls + " (id# " + obj.id + ")\n"
+					+ "  Enter <refID#> for an existing object\n"
+					+ "  Enter N   for a new object\n"
+					+ "   or '$$' to finish");
+			String line = s.nextLine();
+			if (line.equals("$$")) {
+				fin = true;
+			}
+			else if (line.equals("N")) {
+				UserObject returnedObj = objCreator();
+				obj.objArray.add(returnedObj);
+			}
+			else if (!isInt(line) || !checkObjCreated(line)){
+				System.out.println("refID# " + line + " does not exist");
+			}
+			else {
+				obj.objArray.add(getObjFromID(Integer.parseInt(line)));
+			}
+		}
+		return obj;
+	}
+
+	public UserObject createCollection() {
+		String cls = ArrayList.class.getName();
+		UserObject obj = new UserObject(cls, nextID, "collection");
 		objList.add(obj);
 		prepareNextID();
 		boolean fin = false;
@@ -208,22 +222,26 @@ public class ObjectCreator {
 				fin = true;
 			}
 			else if (line.equals("N")) {
-				int returnedID = objCreator();
-				obj.objArray.add(returnedID);
+				UserObject returnedObj = objCreator();
+				obj.objArray.add(returnedObj);
 			}
-			else if (!isNum(line) || !checkObjCreated(line)){
+			else if (!isInt(line) || !checkObjCreated(line)){
 				System.out.println("refID# " + line + " does not exist");
 			}
 			else {
-				obj.objArray.add(Integer.parseInt(line));
+				obj.objArray.add(getObjFromID(Integer.parseInt(line)));
 			}
 		}
-		return obj.id;
+		return obj;
 	}
-
-	public int createCollection() {
-		// TODO Auto-generated method stub
-		return 0;
+	
+	public UserObject getObjFromID(int id) {
+		for (UserObject obj : objList) {
+			if (obj.id == id) {
+				return obj;
+			}
+		}
+		return null;
 	}
 	
 	public void prepareNextID() {
@@ -239,5 +257,60 @@ public class ObjectCreator {
 				}
 			}
 		}
+	}
+	
+	private boolean checkObjCreated(String string) {
+		int id = 999999999;
+		try {
+			id = Integer.parseInt(string);
+		} catch (NumberFormatException e) {
+			return false;
+		}
+		for (UserObject obj : objList) {
+			if (obj.id == id) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean nameExists(UserObject obj, String fName) {
+		for (UserField fields : obj.fields) {
+			if (fields.name.equals(fName)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean isNum(String str) {
+		try {
+			Double.parseDouble(str);
+		} catch (NumberFormatException e) {
+			return false;
+		}
+		return true;
+	}
+	
+	private boolean isInt(String str) {
+		try {
+			Integer.parseInt(str);
+		} catch (NumberFormatException e) {
+			return false;
+		}
+		return true;
+	}
+	
+	private boolean isChar(String str) {
+		if (str.length() == 1) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	public List<UserObject> getObjList() {
+		return objList;
 	}
 }
