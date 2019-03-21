@@ -246,8 +246,8 @@ public class ObjectCreator {
 	
 	public void prepareNextID() {
 		nextID++;
-		boolean tryAgain = false;
-		while (!tryAgain) {
+		boolean tryAgain = true;
+		while (tryAgain) {
 			tryAgain = false;
 			for (UserObject obj : objList) {
 				if (obj.id == nextID) {

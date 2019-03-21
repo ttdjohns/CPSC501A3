@@ -31,15 +31,15 @@ public class Receiver {
     	in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
     	String recieved = "";
     	String readL = "";
-    	while ((readL = in.readLine() + "\n") != null) {
-    		recieved += readL;
+    	while ((readL = in.readLine()) != null) {
+    		recieved += readL  + "\n";
     	}
     	DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
     	Document doc = (Document)db.parse(recieved);
     	return doc;
     }
 	
-	public static void main() throws IOException, UnknownHostException, ParserConfigurationException, SAXException{
+	public static void main(String[] args) throws IOException, UnknownHostException, ParserConfigurationException, SAXException{
 		Document doc = recieve();
 		Deserializer ds = new Deserializer();
 		ds.deserialize(doc);
