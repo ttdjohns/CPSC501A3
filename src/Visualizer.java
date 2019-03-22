@@ -28,15 +28,17 @@ public class Visualizer {
 				for (UserField f : obj.fields) {
 					str += ind(1) + "Field " + f.name;
 					if (f.isPrim) {
-						str += " is " + f.value + "\n";
+						str += " has a value of " + f.value + "\n";
 					}
 					else {
-						str += " is " + f.reference + "\n";
+						str += " is id#" + f.reference + "\n";
 					}
 				}
 			}
+			str += "\n";
 		}
 		System.out.println(str);
+		System.out.println("------------------------------------\n\n");
 	}
 	
 	public String ind(int num) {

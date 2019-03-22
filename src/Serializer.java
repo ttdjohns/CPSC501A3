@@ -45,25 +45,26 @@ public class Serializer {
 				ele.addContent(e);
 			}
 		} 
-		else if (obj.primArray.size() > 0 && obj.arraySize > 0) {
+		else if (obj.arraySize > 0) {
 			ele.setAttribute("length", String.valueOf(obj.arraySize));
-			for (int i = 0; i < obj.arraySize; i++) {
-				if (i < obj.primArray.size()) {
-					ele.addContent((new Element("value")).setText(obj.primArray.get(i)));
-				} 
-				else {
-					ele.addContent((new Element("value")).setText("0"));
+			if (obj.cls.contains("Object")) {
+				for (int i = 0; i < obj.arraySize; i++) {
+					if (i < obj.objArray.size()) {
+						ele.addContent((new Element("reference")).setText(String.valueOf(obj.objArray.get(i))));
+					} 
+					else {
+						ele.addContent((new Element("reference")).setText("NULL"));
+					}
 				}
 			}
-		}
-		else if (obj.objArray.size() > 0 && obj.arraySize > 0) {
-			ele.setAttribute("length", String.valueOf(obj.arraySize));
-			for (int i = 0; i < obj.arraySize; i++) {
-				if (i < obj.objArray.size()) {
-					ele.addContent((new Element("reference")).setText(String.valueOf(obj.objArray.get(i))));
-				} 
-				else {
-					ele.addContent((new Element("reference")).setText("NULL"));
+			else {
+				for (int i = 0; i < obj.arraySize; i++) {
+					if (i < obj.primArray.size()) {
+						ele.addContent((new Element("value")).setText(obj.primArray.get(i)));
+					} 
+					else {
+						ele.addContent((new Element("value")).setText("0"));
+					}
 				}
 			}
 		}

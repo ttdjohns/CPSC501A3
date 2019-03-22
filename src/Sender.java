@@ -12,12 +12,12 @@ import java.io.PrintWriter;
 public class Sender {
 	private static Socket clientSocket;
     private static PrintWriter out;
-    private static BufferedReader in;
+    //private static BufferedReader in;
 
     public static void startConnection(String ip, int port) throws UnknownHostException, IOException {
-        clientSocket = new Socket(ip, port);
+    	clientSocket = new Socket(ip, port);
         out = new PrintWriter(clientSocket.getOutputStream(), true);
-        in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        //in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
     }
  
     /*public String sendMessage(String msg) throws IOException {
@@ -27,7 +27,7 @@ public class Sender {
     }*/
  
     public static void stopConnection() throws IOException {
-        in.close();
+        //in.close();
         out.close();
         clientSocket.close();
     }
@@ -39,9 +39,9 @@ public class Sender {
 		Serializer s = new Serializer();
 		org.jdom2.Document doc = s.serialize(objList);
 		
-		startConnection("127.0.0.1", 4444);
+		startConnection(args[0], 4444);
 		out.println(new XMLOutputter().outputString(doc));
-		
-        
+		stopConnection();
+		System.out.println(new XMLOutputter().outputString(doc));
 	}
 }

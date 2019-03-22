@@ -34,23 +34,23 @@ public class Deserializer {
 		List<Element> children = ele.getChildren();
 		for (Element c : children) {
 			if (c.getName().equals("field")) {
-				String text = c.getChild("value").getText();
+				String text = c.getChildText("value");
 				if (text != null) {
-					UserField f = new UserField(c.getAttributeValue("name"), c.getAttributeValue("declaringclass"), text);
+					UserField f = new UserField(c.getAttributeValue("declaringclass"), c.getAttributeValue("name"), text);
 					obj.fields.add(f);
 				} else {
 					text = c.getChildText("reference");
 					if (!(text.contains("NULL"))) {
-						UserField f = new UserField(c.getAttributeValue("name"), c.getAttributeValue("declaringclass"), Integer.parseInt(text));
+						UserField f = new UserField(c.getAttributeValue("declaringclass"), c.getAttributeValue("name"), Integer.parseInt(text));
 						obj.fields.add(f);
 					}
 				}
 				
 			}
-			else if (c.getName().equals("value")) {
+			else if ((obj.primArray.size() < obj.arraySize) && (c.getName().equals("value"))) {
 				obj.primArray.add(c.getText());
 			}
-			else {
+			else if ((obj.objArray.size() < obj.arraySize) && !(c.getText().contains("NULL"))){
 				obj.objArray.add(Integer.parseInt(c.getText()));
 			}
 		}
