@@ -28,45 +28,13 @@ public class Serializer {
 		done.add(obj.id);
 		
 		if (obj.fields.size() > 0 && obj.fields.get(0).isPrim) {
-			for (UserField i : obj.fields) {
-				Element e = new Element("field");
-				e.setAttribute("name", i.name);
-				e.setAttribute("declaringclass", i.declaringclass);
-				e.addContent((new Element("value")).setText(i.value));
-				ele.addContent(e);
-			}
+			serialPrimFields(obj, ele);
 		}
 		else if (obj.fields.size() > 0 && obj.fields.get(0).isObject) {
-			for (UserField i : obj.fields) {
-				Element e = new Element("field");
-				e.setAttribute("name", i.name);
-				e.setAttribute("declaringclass", i.declaringclass);
-				e.addContent((new Element("reference")).setText(String.valueOf(i.reference)));
-				ele.addContent(e);
-			}
+			serialObjFields(obj, ele);
 		} 
 		else if (obj.arraySize > 0) {
-			ele.setAttribute("length", String.valueOf(obj.arraySize));
-			if (obj.cls.contains("Object")) {
-				for (int i = 0; i < obj.arraySize; i++) {
-					if (i < obj.objArray.size()) {
-						ele.addContent((new Element("reference")).setText(String.valueOf(obj.objArray.get(i))));
-					} 
-					else {
-						ele.addContent((new Element("reference")).setText("NULL"));
-					}
-				}
-			}
-			else {
-				for (int i = 0; i < obj.arraySize; i++) {
-					if (i < obj.primArray.size()) {
-						ele.addContent((new Element("value")).setText(obj.primArray.get(i)));
-					} 
-					else {
-						ele.addContent((new Element("value")).setText("0"));
-					}
-				}
-			}
+			serialArrays(obj, ele);
 		}
 		else {
 			for (int i = 0; i < obj.objArray.size(); i++) {
@@ -75,5 +43,52 @@ public class Serializer {
 		}
 		
 		root.addContent(ele);
+	}
+
+	private void serialArrays(UserObject obj, Element ele) {
+		ele.setAttribute("length", String.valueOf(obj.arraySize));
+		if (obj.cls.contains("Object")) {
+			for (int i = 0; i < obj.arraySize; i++) {
+				if (i < obj.objArray.size()) {
+					ele.addContent((new Element("reference")).setText(String.valueOf(obj.objArray.get(i))));
+				} 
+				else {
+					ele.addContent((new Element("reference")).setText("NULL"));
+				}
+			}
+		}
+		else {
+			for (int i = 0; i < obj.arraySize; i++) {
+				if (i < obj.primArray.size()) {
+					ele.addContent((new Element("value")).setText(obj.primArray.get(i)));
+				} 
+				else {
+					ele.addContent((new Element("value")).setText("0"));
+				}
+			}
+		}
+		
+	}
+
+	private void serialObjFields(UserObject obj, Element ele) {
+		for (UserField i : obj.fields) {
+			Element e = new Element("field");
+			e.setAttribute("name", i.name);
+			e.setAttribute("declaringclass", i.declaringclass);
+			e.addContent((new Element("reference")).setText(String.valueOf(i.reference)));
+			ele.addContent(e);
+		}
+		
+	}
+
+	private void serialPrimFields(UserObject obj, Element ele) {
+		for (UserField i : obj.fields) {
+			Element e = new Element("field");
+			e.setAttribute("name", i.name);
+			e.setAttribute("declaringclass", i.declaringclass);
+			e.addContent((new Element("value")).setText(i.value));
+			ele.addContent(e);
+		}
+		
 	}
 }
