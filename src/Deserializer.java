@@ -15,7 +15,7 @@ public class Deserializer {
 			objList.add(deserialObj(c));
 		}
 		
-		return new Object();
+		return objList;
 	}
 	
 	public UserObject deserialObj(Element ele) {
@@ -50,7 +50,7 @@ public class Deserializer {
 			else if ((obj.primArray.size() < obj.arraySize) && (c.getName().equals("value"))) {
 				obj.primArray.add(c.getText());
 			}
-			else if ((obj.objArray.size() < obj.arraySize) && !(c.getText().contains("NULL"))){
+			else if (!(c.getText().contains("NULL"))){
 				obj.objArray.add(Integer.parseInt(c.getText()));
 			}
 		}
