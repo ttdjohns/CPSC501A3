@@ -9,7 +9,7 @@ public class Serializer {
 	
 	public org.jdom2.Document serialize(Object norm_obj) {
 		if (!(norm_obj instanceof List<?>)) {
-			System.out.println("cannot serialize an object that is not a UserObject");
+			System.out.println("cannot serialize an object that is not a List of UserObject");
 			System.exit(-1);
 		}
 		@SuppressWarnings("unchecked")
